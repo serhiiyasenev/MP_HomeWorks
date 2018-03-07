@@ -1,0 +1,7 @@
+C:\Users\Serhii_Yasenev\source\repos\AdapterExample\AdapterExample\bin\Debug\AdapterExample.exe.config
+C:\Users\Serhii_Yasenev\source\repos\AdapterExample\AdapterExample\bin\Debug\AdapterExample.exe
+C:\Users\Serhii_Yasenev\source\repos\AdapterExample\AdapterExample\bin\Debug\AdapterExample.pdb
+C:\Users\Serhii_Yasenev\source\repos\AdapterExample\AdapterExample\obj\Debug\Adapter.csprojResolveAssemblyReference.cache
+C:\Users\Serhii_Yasenev\source\repos\AdapterExample\AdapterExample\obj\Debug\Adapter.csproj.CoreCompileInputs.cache
+C:\Users\Serhii_Yasenev\source\repos\AdapterExample\AdapterExample\obj\Debug\AdapterExample.exe
+C:\Users\Serhii_Yasenev\source\repos\AdapterExample\AdapterExample\obj\Debug\AdapterExample.pdb
