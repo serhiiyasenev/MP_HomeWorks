@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using TodoApi.Models;
 
@@ -14,7 +13,6 @@ namespace TodoApi.Controllers
 
         public TodoController(TodoContext context)
         {
-            Debug.WriteLine(context.TodoItems);
             _context = context;
 
             if (_context.TodoItems.Count() == 0)
@@ -44,7 +42,7 @@ namespace TodoApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] dynamic item)
+        public IActionResult Create([FromBody] TodoItem item)
         {
             try
             {
