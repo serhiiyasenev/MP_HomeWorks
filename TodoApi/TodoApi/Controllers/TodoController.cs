@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using TodoApi.Models;
 
@@ -12,6 +14,7 @@ namespace TodoApi.Controllers
 
         public TodoController(TodoContext context)
         {
+            Debug.WriteLine(context.TodoItems);
             _context = context;
 
             if (_context.TodoItems.Count() == 0)
@@ -24,7 +27,9 @@ namespace TodoApi.Controllers
         [HttpGet]
         public IEnumerable<TodoItem> GetAll()
         {
-            return _context.TodoItems.ToList();
+
+            var allItems = _context.TodoItems.ToList();
+            return allItems;
         }
 
         [HttpGet("{id}", Name = "GetTodo")]
@@ -39,17 +44,24 @@ namespace TodoApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] TodoItem item)
+        public IActionResult Create([FromBody] dynamic item)
         {
-            if (item == null)
+            try
             {
-                return BadRequest();
+                if (item == null)
+                {
+                    return BadRequest();
+                }
+                _context.TodoItems.Add(item);
+                _context.SaveChanges();
+
+                return CreatedAtRoute("GetTodo", new { id = item.Id, name = item.Name, isComplete = item.IsComplete, values = item.Values }, item);
+
             }
-
-            _context.TodoItems.Add(item);
-            _context.SaveChanges();
-
-            return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
+            catch (Exception e)
+            {
+                return BadRequest("Wrong request: " + e.Message);
+            }
         }
 
         [HttpPut("{id}")]
@@ -68,10 +80,38 @@ namespace TodoApi.Controllers
 
             todo.IsComplete = item.IsComplete;
             todo.Name = item.Name;
+            todo.Values = item.Values;
 
             _context.TodoItems.Update(todo);
             _context.SaveChanges();
             return new NoContentResult();
+        }
+
+        [HttpPost("{id}")]
+        public IActionResult AddValues(long id, [FromBody] TodoItemValues itemValues)
+        {
+            if (itemValues == null || id.Equals(null))
+            {
+                return BadRequest();
+            }
+
+            var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
+            if (todo == null)
+            {
+                return NotFound();
+            }
+
+            if (todo.Values == null)
+            {
+                todo.Values = new List<TodoItemValues>();
+            }
+
+            todo.Values.Add(itemValues);
+
+            _context.TodoItems.Update(todo);
+            _context.SaveChanges();
+
+            return CreatedAtRoute("GetTodo", new { id = todo.Id, name = todo.Name, isComplete = todo.IsComplete, values = todo.Values }, todo);
         }
 
         [HttpDelete("{id}")]
