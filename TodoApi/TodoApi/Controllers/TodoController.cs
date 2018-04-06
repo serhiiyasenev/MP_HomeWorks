@@ -15,7 +15,7 @@ namespace TodoApi.Controllers
         {
             _context = context;
 
-            if (_context.TodoItems.Count() == 0)
+            if (!_context.TodoItems.Any())
             {
                 _context.TodoItems.Add(new TodoItem { Name = "Item1" });
                 _context.SaveChanges();
@@ -25,7 +25,6 @@ namespace TodoApi.Controllers
         [HttpGet]
         public IEnumerable<TodoItem> GetAll()
         {
-
             var allItems = _context.TodoItems.ToList();
             return allItems;
         }
@@ -33,12 +32,19 @@ namespace TodoApi.Controllers
         [HttpGet("{id}", Name = "GetTodo")]
         public IActionResult GetById(long id)
         {
-            var item = _context.TodoItems.FirstOrDefault(t => t.Id == id);
-            if (item == null)
+            try
             {
-                return NotFound();
+                var item = _context.TodoItems.FirstOrDefault(t => t.Id == id);
+                if (item == null)
+                {
+                    return NotFound();
+                }
+                return new ObjectResult(item);
             }
-            return new ObjectResult(item);
+            catch (Exception e)
+            {
+                return BadRequest("Wrong request: " + e.Message);
+            }
         }
 
         [HttpPost]
@@ -54,7 +60,6 @@ namespace TodoApi.Controllers
                 _context.SaveChanges();
 
                 return CreatedAtRoute("GetTodo", new { id = item.Id, name = item.Name, isComplete = item.IsComplete, values = item.Values }, item);
-
             }
             catch (Exception e)
             {
@@ -65,65 +70,86 @@ namespace TodoApi.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(long id, [FromBody] TodoItem item)
         {
-            if (item == null || item.Id != id)
+            try
             {
-                return BadRequest();
-            }
+                if (item == null || item.Id != id)
+                {
+                    return BadRequest();
+                }
 
-            var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
-            if (todo == null)
+                var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
+                if (todo == null)
+                {
+                    return NotFound();
+                }
+
+                todo.IsComplete = item.IsComplete;
+                todo.Name = item.Name;
+                todo.Values = item.Values;
+
+                _context.TodoItems.Update(todo);
+                _context.SaveChanges();
+                return new NoContentResult();
+            }
+            catch (Exception e)
             {
-                return NotFound();
+                return BadRequest("Wrong request: " + e.Message);
             }
-
-            todo.IsComplete = item.IsComplete;
-            todo.Name = item.Name;
-            todo.Values = item.Values;
-
-            _context.TodoItems.Update(todo);
-            _context.SaveChanges();
-            return new NoContentResult();
         }
 
         [HttpPost("{id}")]
         public IActionResult AddValues(long id, [FromBody] TodoItemValues itemValues)
         {
-            if (itemValues == null || id.Equals(null))
+            try
             {
-                return BadRequest();
-            }
+                if (itemValues == null || id.Equals(null))
+                {
+                    return BadRequest();
+                }
 
-            var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
-            if (todo == null)
+                var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
+                if (todo == null)
+                {
+                    return NotFound();
+                }
+
+                if (todo.Values == null)
+                {
+                    todo.Values = new List<TodoItemValues>();
+                }
+
+                todo.Values.Add(itemValues);
+
+                _context.TodoItems.Update(todo);
+                _context.SaveChanges();
+
+                return CreatedAtRoute("GetTodo", new { id = todo.Id, name = todo.Name, isComplete = todo.IsComplete, values = todo.Values }, todo);
+            }
+            catch (Exception e)
             {
-                return NotFound();
+                return BadRequest("Wrong request: " + e.Message);
             }
-
-            if (todo.Values == null)
-            {
-                todo.Values = new List<TodoItemValues>();
-            }
-
-            todo.Values.Add(itemValues);
-
-            _context.TodoItems.Update(todo);
-            _context.SaveChanges();
-
-            return CreatedAtRoute("GetTodo", new { id = todo.Id, name = todo.Name, isComplete = todo.IsComplete, values = todo.Values }, todo);
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
-            if (todo == null)
+            try
             {
-                return NotFound();
-            }
+                var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
+                if (todo == null)
+                {
+                    return NotFound();
+                }
 
-            _context.TodoItems.Remove(todo);
-            _context.SaveChanges();
-            return new NoContentResult();
+                _context.TodoItems.Remove(todo);
+                _context.SaveChanges();
+                return new NoContentResult();
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Wrong request: " + e.Message);
+            }
         }
     }
 }
