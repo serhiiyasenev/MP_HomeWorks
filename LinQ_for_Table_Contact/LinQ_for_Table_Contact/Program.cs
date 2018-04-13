@@ -23,7 +23,7 @@ namespace LinQ_for_Table_Contact
 
             IEnumerable<string> contacts = contactsList.Where(c => c.Company.Equals("Island Trading"))
                 .Where(c => c.Country.StartsWith("U"))
-                .Select(c => c.Company).Distinct();
+                .Select(c => c.Company).Distinct().OrderByDescending(num => num);
 
             foreach (var contact in contacts)
             {
