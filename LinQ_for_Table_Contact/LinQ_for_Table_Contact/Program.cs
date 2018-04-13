@@ -14,14 +14,14 @@ namespace LinQ_for_Table_Contact
                 new Contact("Alfreds Futterkiste", "Maria Anders", "Germany"),
                 new Contact("Centro commercial Moctezuma", "Francisco Chang", "Mexico"),
                 new Contact("Ernst Handel", "Rolan Mendel", "Ausria"),
-                new Contact("Island Trading", "Helen Bennett", "UK"),
+                new Contact("Island Trading1", "Helen Bennett", "UK"),
                 new Contact("Laughing Bacchuss Winecellars", "Yoshi Tannamuri", "Canada"),
                 new Contact("Magazzini Alimentari Riuniti", "Giovanni Rovelli", "Italy"),
-                new Contact("Island Trading", "Maria Mendel", "USA")
+                new Contact("Island Trading2", "Maria Mendel", "USA")
             };
 
 
-            IEnumerable<string> contacts = contactsList.Where(c => c.Company.Equals("Island Trading") & c.Country.StartsWith("U"))
+            IEnumerable<string> contacts = contactsList.Where(c => c.Company.StartsWith("Island Trading") & c.Country.StartsWith("U"))
                 .Select(c => c.Company).Distinct().OrderByDescending(num => num);
 
             foreach (var contact in contacts)
