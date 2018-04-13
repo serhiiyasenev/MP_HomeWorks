@@ -21,9 +21,9 @@ namespace LinQ_for_Table_Contact
             };
 
 
-            List<string> contacts = new List<string>(contactsList.Where(c => c.Company.Equals("Island Trading"))
+            IEnumerable<string> contacts = contactsList.Where(c => c.Company.Equals("Island Trading"))
                 .Where(c => c.Country.StartsWith("U"))
-                .Select(c => c.Company));
+                .Select(c => c.Company).Distinct();
 
             foreach (var contact in contacts)
             {
