@@ -25,7 +25,15 @@ namespace TodoApi.Controllers
         [HttpGet]
         public IEnumerable<TodoItem> GetAll()
         {
-            var allItems = _context.TodoItems.ToList();
+            IEnumerable<TodoItem> allItems;
+            try
+            {
+                allItems = _context.TodoItems.ToList();
+            }
+            catch (Exception)
+            {
+                allItems = null;
+            }
             return allItems;
         }
 
