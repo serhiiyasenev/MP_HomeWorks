@@ -21,7 +21,6 @@ namespace StringComparisonMethod
             var order = "'" + string1 + "'" + " " + relation + " " + "'" + string2 + "'.";
             return order;
         }
-
         public static int Compare(string string1, string string2)
         {
             int result = 0;
@@ -29,12 +28,9 @@ namespace StringComparisonMethod
             {
                 result = 0;
             }
-
             var string1Parts = string1.Split('.');
             var string2Parts = string2.Split('.');
-
             var length = new[] { string1Parts.Length, string2Parts.Length }.Max();
-
             for (var i = 0; i < length; i++)
             {
                 if (!int.TryParse(string1Parts.ElementAtOrDefault(i), out int string1AsInt))
@@ -57,7 +53,6 @@ namespace StringComparisonMethod
                     break;
                 }
             }
-
             return result;
         }
     }

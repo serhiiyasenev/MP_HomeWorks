@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TodoApi.Helpers;
 using TodoApi.Models;
 
 namespace TodoApi.Controllers
@@ -71,7 +72,7 @@ namespace TodoApi.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest("Wrong request: " + e.Message);
+                return BadRequest("Wrong request: " + e.Message + item.CheckPostContent());
             }
         }
 

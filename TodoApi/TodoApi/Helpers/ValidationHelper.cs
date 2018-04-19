@@ -1,30 +1,19 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using TodoApi.Models;
 
 namespace TodoApi.Helpers
 {
-    [Serializable]
-    public class ValidationHelper : Exception
+    public static class ValidationHelper
     {
-        public ValidationHelper()
+        public static string CheckPostContent(this TodoItem item)
         {
-        }
+            string result = null;
 
-        public ValidationHelper(string message) : base(message)
-        {
-        }
+            if (item == null)
+            {
+                result = "Item that you Posted is null!";
+            }
 
-        public ValidationHelper(string message, Exception inner) : base(message, inner)
-        {
-        }
-
-        protected ValidationHelper(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
-
-        public string Result()
-        {
-            return "";
+            return result;
         }
     }
 }
