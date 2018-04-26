@@ -31,6 +31,7 @@ namespace TodoApi.Controllers
             IEnumerable<TodoItem> allItems;
             try
             {
+                _context.TodoItems.UpdateRange();
                 allItems = _context.TodoItems.ToList();
             }
             catch (Exception)
@@ -47,6 +48,7 @@ namespace TodoApi.Controllers
         {
             try
             {
+                _context.TodoItems.UpdateRange();
                 var item = _context.TodoItems.FirstOrDefault(t => t.Id == id);
                 if (item == null)
                 {
@@ -71,6 +73,7 @@ namespace TodoApi.Controllers
                 {
                     return BadRequest();
                 }
+
                 _context.TodoItems.Add(item);
                 _context.SaveChanges();
 
@@ -78,7 +81,7 @@ namespace TodoApi.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest("Wrong request: " + e.Message + "" + item.ToString());
+                return BadRequest("Wrong request: " + e.Message);
             }
         }
 
@@ -117,7 +120,7 @@ namespace TodoApi.Controllers
         [HttpPost("{id}")]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult AddValues(long id, [FromBody] TodoItemValues itemValues)
+        public IActionResult AddValues(long id, [FromBody] TodoItemValue itemValues)
         {
             try
             {
@@ -134,7 +137,7 @@ namespace TodoApi.Controllers
 
                 if (todo.Values == null)
                 {
-                    todo.Values = new List<TodoItemValues>();
+                    todo.Values = new List<TodoItemValue>();
                 }
 
                 todo.Values.Add(itemValues);

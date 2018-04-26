@@ -8,6 +8,6 @@ namespace TodoApi.Models
         public string Name { get; set; }
         public bool IsComplete { get; set; }
 
-        public List<TodoItemValues> Values { get; set; }
+        public List<TodoItemValue> Values { get; set; }
     }
 }

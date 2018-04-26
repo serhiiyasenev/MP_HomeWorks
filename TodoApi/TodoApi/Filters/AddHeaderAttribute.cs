@@ -16,7 +16,7 @@ namespace TodoApi.Filters
         public override void OnResultExecuting(ResultExecutingContext context)
         {
             context.HttpContext.Response.Headers.Add(
-                _name, new string[] { _value });
+                _name, new[] { _value });
             base.OnResultExecuting(context);
         }
     }

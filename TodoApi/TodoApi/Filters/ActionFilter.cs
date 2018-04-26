@@ -12,8 +12,6 @@ namespace TodoApi.Filters
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            // why 2 times??????????
-
             // do something after the action executes
         }
         public void OnResultExecuting(ResultExecutingContext context)
@@ -21,7 +19,7 @@ namespace TodoApi.Filters
             if (IsReusable)
             {
                 context.HttpContext.Response.Headers.Add(
-                    "Internal", new string[] { "Header Added" });
+                    "Internal", new[] { "Header Added" });
             }
         }
 

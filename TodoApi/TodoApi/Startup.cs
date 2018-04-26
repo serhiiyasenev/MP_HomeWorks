@@ -17,8 +17,6 @@ namespace TodoApi
                 new AddHeaderAttribute("GlobalAddHeader", "Result filter added to MvcOptions.Filters")); // an instance
                 options.Filters.Add(typeof(ActionFilter)); // by type
             });
-
-            services.AddScoped<AddHeaderFilterWithDi>();
         }
 
         public void Configure(IApplicationBuilder app)
