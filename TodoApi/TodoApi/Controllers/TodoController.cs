@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TodoApi.Helpers;
+using TodoApi.Filters;
 using TodoApi.Models;
 
 namespace TodoApi.Controllers
@@ -24,6 +24,8 @@ namespace TodoApi.Controllers
         }
 
         [HttpGet]
+        [ActionFilter]
+        [ValidationModel]
         public IEnumerable<TodoItem> GetAll()
         {
             IEnumerable<TodoItem> allItems;
@@ -39,6 +41,8 @@ namespace TodoApi.Controllers
         }
 
         [HttpGet("{id}", Name = "GetTodo")]
+        [ActionFilter]
+        [ValidationModel]
         public IActionResult GetById(long id)
         {
             try
@@ -57,6 +61,8 @@ namespace TodoApi.Controllers
         }
 
         [HttpPost]
+        [ActionFilter]
+        [ValidationModel]
         public IActionResult Create([FromBody] TodoItem item)
         {
             try
@@ -72,11 +78,13 @@ namespace TodoApi.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest("Wrong request: " + e.Message + item.CheckPostContent());
+                return BadRequest("Wrong request: " + e.Message + "" + item.ToString());
             }
         }
 
         [HttpPut("{id}")]
+        [ActionFilter]
+        [ValidationModel]
         public IActionResult Update(long id, [FromBody] TodoItem item)
         {
             try
@@ -107,6 +115,8 @@ namespace TodoApi.Controllers
         }
 
         [HttpPost("{id}")]
+        [ActionFilter]
+        [ValidationModel]
         public IActionResult AddValues(long id, [FromBody] TodoItemValues itemValues)
         {
             try
@@ -141,6 +151,8 @@ namespace TodoApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ActionFilter]
+        [ValidationModel]
         public IActionResult Delete(long id)
         {
             try
