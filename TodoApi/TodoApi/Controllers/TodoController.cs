@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using TodoApi.Filters;
 using TodoApi.Models;
 
@@ -18,7 +19,18 @@ namespace TodoApi.Controllers
 
             if (!_context.TodoItems.Any())
             {
-                _context.TodoItems.Add(new TodoItem { Name = "Item1" });
+                _context.TodoItems.Add(
+                    new TodoItem
+                    {
+                        Id = 1,
+                        Name = "Item1",
+                        IsComplete = true,
+                        Values = new List<TodoItemValue> {
+                            new TodoItemValue { Id = 22, Value = 22 }
+                        }
+
+                    }
+                );
                 _context.SaveChanges();
             }
         }
@@ -32,7 +44,14 @@ namespace TodoApi.Controllers
             try
             {
                 _context.TodoItems.UpdateRange();
-                allItems = _context.TodoItems.ToList();
+                var items =
+                    from ti in _context.TodoItems
+                    select new
+                    {
+                        ti,
+                        ti.Values
+                    };
+                allItems = _context.TodoItems.Include(ti => ti.Values).ToList();
             }
             catch (Exception)
             {
@@ -72,6 +91,15 @@ namespace TodoApi.Controllers
                 if (item == null)
                 {
                     return BadRequest();
+                }
+
+                if (item.Values == null)
+                {
+                    item.Values = new List<TodoItemValue>();
+                }
+                foreach (var val in item.Values)
+                {
+                    _context.TodoItemValues.Add(val);
                 }
 
                 _context.TodoItems.Add(item);
