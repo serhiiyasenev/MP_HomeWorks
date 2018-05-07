@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using TodoApi.Filters;
 using TodoApi.Models;
 
@@ -44,13 +44,13 @@ namespace TodoApi.Controllers
             try
             {
                 _context.TodoItems.UpdateRange();
-                var items =
-                    from ti in _context.TodoItems
-                    select new
-                    {
-                        ti,
-                        ti.Values
-                    };
+                //var items =
+                //    from ti in _context.TodoItems
+                //    select new
+                //    {
+                //        ti,
+                //        ti.Values
+                //    };
                 allItems = _context.TodoItems.Include(ti => ti.Values).ToList();
             }
             catch (Exception)
@@ -68,11 +68,12 @@ namespace TodoApi.Controllers
             try
             {
                 _context.TodoItems.UpdateRange();
-                var item = _context.TodoItems.FirstOrDefault(t => t.Id == id);
+                var item = _context.TodoItems.Include(ti => ti.Values).FirstOrDefault(t => t.Id == id);
                 if (item == null)
                 {
                     return NotFound();
                 }
+
                 return new ObjectResult(item);
             }
             catch (Exception e)
