@@ -72,11 +72,11 @@ namespace TodoApi.Controllers
         [HttpPost("{id}")]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult AddValue(long id, [FromBody] TodoItemValue itemValues)
+        public IActionResult AddValue(long id, [FromBody] TodoItemValue itemValue)
         {
             try
             {
-                if (itemValues == null || id.Equals(null))
+                if (itemValue == null || id.Equals(null))
                 {
                     return BadRequest();
                 }
@@ -92,7 +92,7 @@ namespace TodoApi.Controllers
                     todo.Values = new List<TodoItemValue>();
                 }
 
-                todo.Values.Add(itemValues);
+                todo.Values.Add(itemValue);
                 _context.TodoItems.Update(todo);
                 _context.SaveChanges();
 
