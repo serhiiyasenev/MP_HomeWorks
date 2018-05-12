@@ -40,10 +40,39 @@ namespace TodoApi.Controllers
             }
         }
 
+        [HttpGet("{itemId}/{valueId}")]
+        [ActionFilter]
+        [ValidationModel]
+        public IActionResult GetItemValueByIdOfItem(long itemId, long valueId)
+        {
+            try
+            {
+                _context.TodoItems.UpdateRange();
+                var item = _context.TodoItems.Include(ti => ti.Values).FirstOrDefault(t => t.Id == itemId);
+                if (item == null)
+                {
+                    return NotFound();
+                }
+
+                double value = 0;
+
+                if (item.Values != null)
+                {
+                    value = item.Values.First(v => v.Id == valueId).Value;
+                }
+
+                return new ObjectResult(value);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Wrong request: " + e.Message);
+            }
+        }
+
         [HttpPost("{id}")]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult AddValues(long id, [FromBody] TodoItemValue itemValues)
+        public IActionResult AddValue(long id, [FromBody] TodoItemValue itemValues)
         {
             try
             {
@@ -81,6 +110,46 @@ namespace TodoApi.Controllers
             }
         }
 
+        [HttpPut("{itemId}")]
+        [ActionFilter]
+        [ValidationModel]
+        public IActionResult UpdateValue(long itemId, [FromBody] TodoItemValue value)
+        {
+            try
+            {
+                if (value == null)
+                {
+                    return BadRequest();
+                }
+
+                var item = _context.TodoItems.Include(ti => ti.Values).FirstOrDefault(t => t.Id == itemId);
+
+                if (item == null)
+                {
+                    return NotFound();
+                }
+
+                var val = item.Values.FirstOrDefault(v => v.Id == value.Id);
+
+                if (val == null)
+                {
+                    AddValue(itemId, value);
+                }
+                else
+                {
+                    val.Value = value.Value;
+                }
+
+                _context.TodoItems.Update(item);
+                _context.SaveChanges();
+                return new ObjectResult($"New value is '{val?.Value}' in item {item.Id} for value {val?.Id}");
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Wrong request: " + e.Message);
+            }
+        }
+
         [HttpDelete("{id}/{valueId}")]
         [ActionFilter]
         [ValidationModel]
@@ -106,6 +175,39 @@ namespace TodoApi.Controllers
 
                 string result = $"Value with id '{value.Id}' and value '{value.Value}' was deleted " +
                                 $"from item: {item.Id}";
+
+                return new ObjectResult(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Wrong request: " + e.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ActionFilter]
+        [ValidationModel]
+        public IActionResult DeleteAllValues(long id)
+        {
+            try
+            {
+                var item = _context.TodoItems.Include(ti => ti.Values).FirstOrDefault(t => t.Id == id);
+                if (item == null)
+                {
+                    return NotFound();
+                }
+
+                List<TodoItemValue> values = item.Values.ToList();
+
+                if (values.Count == 0)
+                {
+                    return NotFound();
+                }
+
+                _context.TodoItemValues.RemoveRange(values);
+                _context.SaveChanges();
+
+                string result = $"All Values from item: {item.Id} was deleted";
 
                 return new ObjectResult(result);
             }
