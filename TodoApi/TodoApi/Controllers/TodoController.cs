@@ -8,7 +8,7 @@ using TodoApi.Models;
 
 namespace TodoApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/items")]
     public class TodoController : Controller
     {
         private readonly TodoContext _context;
@@ -139,47 +139,6 @@ namespace TodoApi.Controllers
                 _context.TodoItems.Update(todo);
                 _context.SaveChanges();
                 return new NoContentResult();
-            }
-            catch (Exception e)
-            {
-                return BadRequest("Wrong request: " + e.Message);
-            }
-        }
-
-        [HttpPost("{id}")]
-        [ActionFilter]
-        [ValidationModel]
-        public IActionResult AddValues(long id, [FromBody] TodoItemValue itemValues)
-        {
-            try
-            {
-                if (itemValues == null || id.Equals(null))
-                {
-                    return BadRequest();
-                }
-
-                var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
-                if (todo == null)
-                {
-                    return NotFound();
-                }
-
-                if (todo.Values == null)
-                {
-                    todo.Values = new List<TodoItemValue>();
-                }
-
-                todo.Values.Add(itemValues);
-                _context.TodoItems.Update(todo);
-                _context.SaveChanges();
-
-                return CreatedAtRoute("GetTodo", new
-                {
-                    id = todo.Id,
-                    name = todo.Name,
-                    isComplete = todo.IsComplete,
-                    values = todo.Values
-                }, _context.TodoItems.Where(item => item.Id == id).Select(item => item.Values));
             }
             catch (Exception e)
             {
