@@ -170,11 +170,16 @@ namespace TodoApi.Controllers
                 }
 
                 todo.Values.Add(itemValues);
-
                 _context.TodoItems.Update(todo);
                 _context.SaveChanges();
 
-                return CreatedAtRoute("GetTodo", new { id = todo.Id, name = todo.Name, isComplete = todo.IsComplete, values = todo.Values }, todo);
+                return CreatedAtRoute("GetTodo", new
+                {
+                    id = todo.Id,
+                    name = todo.Name,
+                    isComplete = todo.IsComplete,
+                    values = todo.Values
+                }, _context.TodoItems.Where(item => item.Id == id).Select(item => item.Values));
             }
             catch (Exception e)
             {
