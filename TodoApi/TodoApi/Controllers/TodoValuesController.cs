@@ -8,7 +8,7 @@ using TodoApi.Models;
 
 namespace TodoApi.Controllers
 {
-    [Route("api/values")]
+    [Route("api/items")]
     public class TodoValuesController : Controller
     {
         private readonly TodoContext _context;
@@ -18,15 +18,16 @@ namespace TodoApi.Controllers
             _context = context;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult GetItemValuesByIdOfItem(long id)
+        [Route("{itemId:long}/values")]
+        public IActionResult GetItemValuesByIdOfItem(long itemId)
         {
             try
             {
                 _context.TodoItems.UpdateRange();
-                var item = _context.TodoItems.Include(ti => ti.Values).FirstOrDefault(t => t.Id == id);
+                var item = _context.TodoItems.Include(ti => ti.Values).FirstOrDefault(t => t.Id == itemId);
                 if (item == null)
                 {
                     return NotFound();
@@ -40,9 +41,10 @@ namespace TodoApi.Controllers
             }
         }
 
-        [HttpGet("{itemId}/{valueId}")]
+        [HttpGet]
         [ActionFilter]
         [ValidationModel]
+        [Route("{itemId:long}/values/{valueId:long}")]
         public IActionResult GetItemValueByIdOfItem(long itemId, long valueId)
         {
             try
@@ -69,19 +71,19 @@ namespace TodoApi.Controllers
             }
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("{itemId:long}/values")]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult AddValue(long id, [FromBody] TodoItemValue itemValue)
+        public IActionResult AddValue(long itemId, [FromBody] TodoItemValue itemValue)
         {
             try
             {
-                if (itemValue == null || id.Equals(null))
+                if (itemValue == null || itemId.Equals(null))
                 {
                     return BadRequest();
                 }
 
-                var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
+                var todo = _context.TodoItems.FirstOrDefault(t => t.Id == itemId);
                 if (todo == null)
                 {
                     return NotFound();
@@ -102,7 +104,7 @@ namespace TodoApi.Controllers
                     name = todo.Name,
                     isComplete = todo.IsComplete,
                     values = todo.Values
-                }, _context.TodoItems.Where(item => item.Id == id).Select(item => item.Values));
+                }, _context.TodoItems.Where(item => item.Id == itemId).Select(item => item.Values));
             }
             catch (Exception e)
             {
@@ -110,7 +112,7 @@ namespace TodoApi.Controllers
             }
         }
 
-        [HttpPut("{itemId}")]
+        [HttpPut("{itemId:long}/values")]
         [ActionFilter]
         [ValidationModel]
         public IActionResult UpdateValue(long itemId, [FromBody] TodoItemValue value)
@@ -150,14 +152,14 @@ namespace TodoApi.Controllers
             }
         }
 
-        [HttpDelete("{id}/{valueId}")]
+        [HttpDelete("{itemId:long}/values/{valueId:long}")]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult Delete(long id, long valueId)
+        public IActionResult Delete(long itemId, long valueId)
         {
             try
             {
-                var item = _context.TodoItems.Include(ti => ti.Values).FirstOrDefault(t => t.Id == id);
+                var item = _context.TodoItems.Include(ti => ti.Values).FirstOrDefault(t => t.Id == itemId);
                 if (item == null)
                 {
                     return NotFound();
@@ -184,14 +186,14 @@ namespace TodoApi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{itemId:long}/values")]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult DeleteAllValues(long id)
+        public IActionResult DeleteAllValues(long itemId)
         {
             try
             {
-                var item = _context.TodoItems.Include(ti => ti.Values).FirstOrDefault(t => t.Id == id);
+                var item = _context.TodoItems.Include(ti => ti.Values).FirstOrDefault(t => t.Id == itemId);
                 if (item == null)
                 {
                     return NotFound();
