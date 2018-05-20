@@ -60,7 +60,7 @@ namespace TodoApi.Controllers
             return allItems;
         }
 
-        [HttpGet("{id}", Name = "GetTodo")]
+        [HttpGet("{id:long}", Name = "GetTodo")]
         [ActionFilter]
         [ValidationModel]
         public IActionResult GetById(long id)
@@ -94,6 +94,13 @@ namespace TodoApi.Controllers
                     return BadRequest();
                 }
 
+                List<TodoItem> items = _context.TodoItems.ToList();
+
+                if (items.Count(it => it.Id == item.Id) != 0)
+                {
+                    return BadRequest("Wrong request: item with id " + item.Id + " has already been added");
+                }
+
                 if (item.Values == null)
                 {
                     item.Values = new List<TodoItemValue>();
@@ -114,7 +121,7 @@ namespace TodoApi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:long}")]
         [ActionFilter]
         [ValidationModel]
         public IActionResult Update(long id, [FromBody] TodoItem item)
@@ -138,7 +145,7 @@ namespace TodoApi.Controllers
 
                 _context.TodoItems.Update(todo);
                 _context.SaveChanges();
-                return new NoContentResult();
+                return CreatedAtRoute("GetTodo", new { id = item.Id, name = item.Name, isComplete = item.IsComplete, values = item.Values }, item);
             }
             catch (Exception e)
             {
@@ -146,7 +153,7 @@ namespace TodoApi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:long}")]
         [ActionFilter]
         [ValidationModel]
         public IActionResult Delete(long id)
