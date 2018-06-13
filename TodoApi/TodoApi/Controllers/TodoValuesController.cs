@@ -21,8 +21,8 @@ namespace TodoApi.Controllers
         [HttpGet]
         [ActionFilter]
         [ValidationModel]
-        [Route("{itemId:long}/values")]
-        public IActionResult GetItemValuesByIdOfItem(long itemId)
+        [Route("{itemId:int}/values")]
+        public IActionResult GetItemValuesByIdOfItem(int itemId)
         {
             try
             {
@@ -44,8 +44,8 @@ namespace TodoApi.Controllers
         [HttpGet]
         [ActionFilter]
         [ValidationModel]
-        [Route("{itemId:long}/values/{valueId:long}")]
-        public IActionResult GetItemValueByIdOfItem(long itemId, long valueId)
+        [Route("{itemId:int}/values/{valueId:int}")]
+        public IActionResult GetItemValueByIdOfItem(int itemId, int valueId)
         {
             try
             {
@@ -71,10 +71,10 @@ namespace TodoApi.Controllers
             }
         }
 
-        [HttpPost("{itemId:long}/values")]
+        [HttpPost("{itemId:int}/values")]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult AddValue(long itemId, [FromBody] TodoItemValue itemValue)
+        public IActionResult AddValue(int itemId, [FromBody] TodoItemValue itemValue)
         {
             try
             {
@@ -112,10 +112,10 @@ namespace TodoApi.Controllers
             }
         }
 
-        [HttpPut("{itemId:long}/values")]
+        [HttpPut("{itemId:int}/values")]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult UpdateValue(long itemId, [FromBody] TodoItemValue value)
+        public IActionResult UpdateValue(int itemId, [FromBody] TodoItemValue value)
         {
             try
             {
@@ -152,10 +152,10 @@ namespace TodoApi.Controllers
             }
         }
 
-        [HttpDelete("{itemId:long}/values/{valueId:long}")]
+        [HttpDelete("{itemId:int}/values/{valueId:int}")]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult Delete(long itemId, long valueId)
+        public IActionResult Delete(int itemId, int valueId)
         {
             try
             {
@@ -186,10 +186,10 @@ namespace TodoApi.Controllers
             }
         }
 
-        [HttpDelete("{itemId:long}/values")]
+        [HttpDelete("{itemId:int}/values")]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult DeleteAllValues(long itemId)
+        public IActionResult DeleteAllValues(int itemId)
         {
             try
             {

@@ -19,6 +19,8 @@ namespace TodoApi.Controllers
 
             if (!_context.TodoItems.Any())
             {
+                context.Database.OpenConnection();
+                context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.TodoItems ON; INSERT INTO dbo.TodoItems (Id, Name, IsComplete) VALUES (0, 'test1', 1);");
                 _context.TodoItems.Add(
                     new TodoItem
                     {
@@ -60,10 +62,10 @@ namespace TodoApi.Controllers
             return allItems;
         }
 
-        [HttpGet("{id:long}", Name = "GetTodo")]
+        [HttpGet("{id:int}", Name = "GetTodo")]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult GetById(long id)
+        public IActionResult GetById(int id)
         {
             try
             {
@@ -121,10 +123,10 @@ namespace TodoApi.Controllers
             }
         }
 
-        [HttpPut("{id:long}")]
+        [HttpPut("{id:int}")]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult Update(long id, [FromBody] TodoItem item)
+        public IActionResult Update(int id, [FromBody] TodoItem item)
         {
             try
             {
@@ -153,10 +155,10 @@ namespace TodoApi.Controllers
             }
         }
 
-        [HttpDelete("{id:long}")]
+        [HttpDelete("{id:int}")]
         [ActionFilter]
         [ValidationModel]
-        public IActionResult Delete(long id)
+        public IActionResult Delete(int id)
         {
             try
             {
